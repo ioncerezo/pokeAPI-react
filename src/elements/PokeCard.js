@@ -1,13 +1,14 @@
-import { type } from "@testing-library/user-event/dist/type";
 import React, { useState, useEffect } from "react";
+import TypeBadge from "./TypeBadge";
 
 function PokeCard({ url }) {
   const [pokemonName, setPokemonName] = useState();
   const [pokemonID, setPokemonID] = useState();
   const [pokemonIMG, setPokemonIMG] = useState();
   const [pokemonTypes, setPokemonTypes] = useState([]);
+  const [description, setDescription] = useState([]);
 
-
+  
   useEffect(() => {
     fetch(url)
       .then((response) => response.json())
@@ -20,7 +21,7 @@ function PokeCard({ url }) {
             typeList.push(e.types[i].type.name)
         }
         setPokemonTypes(typeList)
-    
+  
       })
       .catch((err) => {
         console.log(err.message);
@@ -41,7 +42,10 @@ function PokeCard({ url }) {
         <h5 className="text-gray-900 font-bold text-lg tracking-tight mb-2">
           {pokemonName}
         </h5>
-        {pokemonTypes.map(type => <p>{type}</p>)}
+        <div className="flex gap-1">
+          {pokemonTypes.map(type => <TypeBadge key={`${pokemonName}-${type}`} type={type}/>)}
+        </div>
+        
       </div>
     </div>
   );
