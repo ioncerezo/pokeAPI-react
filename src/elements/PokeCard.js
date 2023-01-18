@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import TypeBadge from "./TypeBadge";
 
-function PokeCard({ url, name }) {
+function PokeCard({ url, name, seeAll }) {
   const [pokemonName, setPokemonName] = useState();
   const [pokemonID, setPokemonID] = useState();
   const [pokemonIMG, setPokemonIMG] = useState();
@@ -30,10 +30,12 @@ function PokeCard({ url, name }) {
       .then((e) => {
         const data = e.flavor_text_entries;
         let result = data
-          .filter((entry) => entry.language.name === "en")[0]
-          .flavor_text.replace("", " ");
+        .filter((entry) => entry.language.name === "en")[0]
+        .flavor_text.replace("", " ");
         result = sentenceCase(result, " ");
-        setPokemonDescription(result);
+        setPokemonDescription(result)
+        
+        
       });
   }, [url2]);
   useEffect(() => {
@@ -43,8 +45,12 @@ function PokeCard({ url, name }) {
         setPokemonName(e.name[0].toUpperCase() + e.name.slice(1));
         setPokemonID(e.id);
         setPokemonWeight(e.weight)
-        setPokemonBackIMG(e.sprites.back_default);
         setPokemonIMG(e.sprites.front_default);
+        if(!e.sprites.back_default){
+          setPokemonBackIMG(pokemonIMG)
+        } else { 
+          setPokemonBackIMG(e.sprites.back_default);
+        }
         const typeList = [];
         for (let i = 0; i < e.types.length; i++) {
           typeList.push(e.types[i].type.name);
@@ -52,13 +58,23 @@ function PokeCard({ url, name }) {
         setPokemonTypes(typeList);
       });
   }, [url]);
-
+  if (url === 'none'){
+    return (
+    <div>
+    <h1>Empty</h1>
+    <img onClick={()=> seeAll()} src='https://media.tenor.com/5B_aZRe5cQkAAAAC/tired-pikachu.gif' alt='sad pikatchu GIF'></img>
+    </div>
+    )
+  }
+  if(!pokemonDescription){
+    setPokemonDescription('Without description in the PokeDex :(')
+  }
   return (
     <div
       onClick={() => {
         setCardOpen(!cardOpen)
         setTimeout(()=>setCardOpen(false),4000)}}
-      className="active:ring-2 cursor-pointer transition duration-300 ease-in-out  bg-white shadow-md border h-64 border-gray-200 rounded-lg w-40"
+      className="active:ring-2 cursor-pointer transition duration-300 ease-in-out  bg-white shadow-md border min-h-64 border-gray-200 rounded-lg w-40"
     >
       <div className="w-full h-32 bg-gray-200 flex items-center justify-center hover:opacity-80 transition duration-500 ease-in-out">
         <img
@@ -70,8 +86,8 @@ function PokeCard({ url, name }) {
       </div>
       {
         cardOpen ? 
-        <div className="h-32 flex p-2 justify-center items-center">
-        <p className="text-sm italic text-gray-900 " >{pokemonDescription}</p>
+        <div className="min-h-[128px] flex p-2 overflow justify-center items-center">
+        <p className="text-sm min-h-32 italic text-gray-900 " >{pokemonDescription}</p>
         </div>
         :
         <div className="p-5">

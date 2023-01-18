@@ -5,40 +5,67 @@ import PokeCard from './elements/PokeCard';
 function App() {
     const [pokemons, setPokemons] = useState([]);
     const [pokemonsALL, setPokemonsALL] = useState([]);
+    const [pagesOpen, setPagesOpen] = useState(true);
+    const [pageNumber, setPageNumber] = useState(0);
+    const [isFirstPage, setIsFirstPage] = useState(true);
+    const [isLastPage, setIsLastPage] = useState(false);
+
 
     function seeAll(){
-      setPokemons(pokemonsALL)
+      setPagesOpen(true)
+      setPokemons(pagination(pokemonsALL, 0))
     }
     function sort(letter){
+      setPagesOpen(false)
       const sortedArray = pokemonsALL.filter(pokemon => pokemon.name[0] === letter)
+      if (sortedArray.length < 1){
+        sortedArray.push({url: 'none'})
+      }
       setPokemons(sortedArray)
       
     }
-    
+    function pagination(pokeArray, page){
+      let count= page * 16
+      const sortedArray = pokeArray.filter((pokemon, index)=> index>=0+count && index<16+count)
+      return sortedArray
+    }
     useEffect(() => {
-       fetch('https://pokeapi.co/api/v2/pokemon/?limit=151')
+       fetch('https://pokeapi.co/api/v2/pokemon/?limit=905')
           .then((response) => response.json())
           .then((allPokemon) => {
             let pokemonlist = []
             allPokemon.results.forEach(pokemon => {
               pokemonlist.push(pokemon)
-              
             });
-            setPokemons(pokemonlist)
+            
             setPokemonsALL(pokemonlist)
+            const sortedArray = pokemonlist.filter((pokemon, index)=> index>=0 && index<16)
+            setPokemons(sortedArray)
             
           })
-          .catch((err) => {
-             console.log(err.message);
-          });
-          
     }, []);
-    const btnClass = "inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-transparent border-t border-b border-gray-900 hover:bg-gray-900 hover:text-white focus:z-10 focus:ring-2 focus:ring-gray-500 focus:bg-gray-900 focus:text-white"
+
+    useEffect(() => {
+      if(pageNumber=== 0){
+        return setIsFirstPage(true)
+      } else {
+        return setIsFirstPage(false)
+      }
+    });
+    useEffect(() => {
+      if(pageNumber=== 56){
+        return setIsLastPage(true)
+      } else {
+        return setIsLastPage(false)
+      }
+    });
+    
+
+    const btnClass = "font-semibold text-sm text-gray-900 rounded-full hover:bg-gray-800 active:ring-0 hover:ring-2 hover:ring-gray-300 hover:font-bold hover:text-white  focus:bg-gray-800 focus:font-bold focus:text-white w-8 h-8"
   return (
     <div className=' bg-gray-100 min-h-screen'>
-      <h1 className='text-3xl' >Hola</h1>
-      <div className='flex justify-center rounded-md shadow-sm" role="group'>
-        <button className='inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-transparent border border-gray-900 rounded-l-lg hover:bg-gray-900 hover:text-white focus:z-10 focus:ring-2 focus:ring-gray-500 focus:bg-gray-900 focus:text-white' onClick={()=> seeAll()}>ALL</button>
+      
+      <div className='container mx-auto flex flex-wrap justify-center md:gap-5 gap-3 p-4' >
         <button className={btnClass} onClick={()=> sort('a')}>A</button>
         <button className={btnClass} onClick={()=> sort('b')}>B</button>
         <button className={btnClass} onClick={()=> sort('c')}>C</button>
@@ -64,11 +91,53 @@ function App() {
         <button className={btnClass} onClick={()=> sort('w')}>W</button>
         <button className={btnClass} onClick={()=> sort('x')}>X</button>
         <button className={btnClass} onClick={()=> sort('y')}>Y</button>
-        <button className='inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-transparent border-t border-b border-r border-gray-900 rounded-r-md hover:bg-gray-900 hover:text-white focus:z-10 focus:ring-2 focus:ring-gray-500 focus:bg-gray-900 focus:text-white' onClick={()=> sort('z')}>Z</button>
+        <button className={btnClass} onClick={()=> sort('z')}>Z</button>
       </div>
+
+      <button 
+        disabled={pagesOpen}
+        onClick={()=> {seeAll(); setPageNumber(pageNumber*0)}}
+        className=' disabled:ring-2 ring-gray-400 disabled:hover:bg-gray-800 disabled:hover:text-white mx-auto m-4 flex items-center px-4 py-2 text-sm font-medium text-white bg-gray-800 border border-gray-900 rounded-md hover:bg-transparent hover:text-gray-900 focus:z-10 focus:ring-2 focus:ring-gray-500 focus:bg-gray-800 focus:text-white'>
+        All Pokémon
+      </button>
+ 
       
+      
+      {
+        pagesOpen && 
+        <div className="flex mt-4 flex-col items-center">
+        <span className="text-sm text-gray-700 ">
+        Showing <span className="font-semibold text-gray-900 ">
+        {isFirstPage ? '1' : `${16*(pageNumber)}` }
+        </span> to <span className="font-semibold text-gray-900">
+        {isLastPage ? '905' : `${16*(pageNumber+1)}`}
+        </span> of <span className="font-semibold text-gray-900">905</span> Pokémon
+        </span>
+        
+        <div className=" inline-flex mt-2 xs:mt-0">
+        <button
+        disabled={isFirstPage}
+        onClick={()=> {
+          setPageNumber(pageNumber-1)
+          setPokemons(pagination(pokemonsALL, pageNumber-1)) 
+        }}
+        className=" disabled:bg-gray-400 border disabled:text-gray-50 border-gray-800 px-4 py-2 text-sm font-medium text-white bg-gray-800 rounded-l hover:bg-gray-900">
+          Prev
+        </button>
+        <button
+        disabled={isLastPage} 
+        onClick={()=> {
+          setPageNumber(pageNumber+1)
+          setPokemons(pagination(pokemonsALL, pageNumber+1))
+        }}
+        className="disabled:bg-gray-400 border disabled:text-gray-50 border-gray-800 px-4 py-2 text-sm font-medium text-white bg-gray-800  rounded-r hover:bg-gray-900 ">
+          Next
+        </button>
+      </div>
+      </div>
+        }
       <div className='mx-auto mt-6 p-2 container  justify-center flex flex-wrap gap-5'>
-      {pokemons.map(pokemon => <PokeCard  name={pokemon.name} key={pokemon.url} url={pokemon.url}/>)}
+      {pokemons.map(pokemon => <PokeCard seeAll={seeAll} name={pokemon.name} key={pokemon.url} url={pokemon.url}/>)}
       
       </div>
     </div>
