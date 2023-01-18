@@ -1,6 +1,8 @@
 import './App.css';
 import React, { useState, useEffect } from 'react';
 import PokeCard from './elements/PokeCard';
+import Footer from './elements/Footer';
+import { MdCatchingPokemon } from "react-icons/md";
 
 function App() {
     const [pokemons, setPokemons] = useState([]);
@@ -51,20 +53,22 @@ function App() {
       } else {
         return setIsFirstPage(false)
       }
-    });
+    },[pageNumber]);
     useEffect(() => {
       if(pageNumber=== 56){
         return setIsLastPage(true)
       } else {
         return setIsLastPage(false)
       }
-    });
+    },[pageNumber]);
     
 
-    const btnClass = "font-semibold text-sm text-gray-900 rounded-full hover:bg-gray-800 active:ring-0 hover:ring-2 hover:ring-gray-300 hover:font-bold hover:text-white  focus:bg-gray-800 focus:font-bold focus:text-white w-8 h-8"
+    const btnClass = 'font-semibold text-sm text-gray-900 rounded-full hover:bg-gray-800 active:ring-0 hover:ring-2 hover:ring-gray-300 hover:font-bold hover:text-white  focus:bg-gray-800 focus:font-bold focus:text-white w-8 h-8'
   return (
-    <div className=' bg-gray-100 min-h-screen'>
-      
+    <div className=' bg-gray-50 min-h-screen'>
+       <div className='w-full h-28 pt-2 flex justify-center items-center text-center text-5xl font-bold tracking-tight '>
+        <p alt='react pokedex' className='flex items-center'><span className=' font-extrabold pr-5'>REACT </span> P<span className='pt-3 mx-[-3px] text-4xl'><MdCatchingPokemon/></span>kéDex</p>
+       </div> 
       <div className='container mx-auto flex flex-wrap justify-center md:gap-5 gap-3 p-4' >
         <button className={btnClass} onClick={()=> sort('a')}>A</button>
         <button className={btnClass} onClick={()=> sort('b')}>B</button>
@@ -105,23 +109,23 @@ function App() {
       
       {
         pagesOpen && 
-        <div className="flex mt-4 flex-col items-center">
-        <span className="text-sm text-gray-700 ">
-        Showing <span className="font-semibold text-gray-900 ">
-        {isFirstPage ? '1' : `${16*(pageNumber)}` }
-        </span> to <span className="font-semibold text-gray-900">
-        {isLastPage ? '905' : `${16*(pageNumber+1)}`}
-        </span> of <span className="font-semibold text-gray-900">905</span> Pokémon
-        </span>
+        <div className='flex mt-4 flex-col items-center'>
         
-        <div className=" inline-flex mt-2 xs:mt-0">
+        <span className='text-sm mt-3 mb-2 text-gray-700 '>
+        Showing <span className='font-semibold text-gray-900 '>
+        {isFirstPage ? '1' : `${16*(pageNumber)}` }
+        </span> to <span className='font-semibold text-gray-900'>
+        {isLastPage ? '905' : `${16*(pageNumber+1)}`}
+        </span> of <span className='font-semibold text-gray-900'>905</span> Pokémon
+        </span>
+        <div className=' inline-flex mt-2 xs:mt-0'>
         <button
         disabled={isFirstPage}
         onClick={()=> {
           setPageNumber(pageNumber-1)
           setPokemons(pagination(pokemonsALL, pageNumber-1)) 
         }}
-        className=" disabled:bg-gray-400 border disabled:text-gray-50 border-gray-800 px-4 py-2 text-sm font-medium text-white bg-gray-800 rounded-l hover:bg-gray-900">
+        className=' disabled:bg-gray-400 border disabled:text-gray-50 border-gray-800 px-4 py-2 text-sm font-medium text-white bg-gray-800 rounded-l hover:bg-gray-900'>
           Prev
         </button>
         <button
@@ -130,16 +134,18 @@ function App() {
           setPageNumber(pageNumber+1)
           setPokemons(pagination(pokemonsALL, pageNumber+1))
         }}
-        className="disabled:bg-gray-400 border disabled:text-gray-50 border-gray-800 px-4 py-2 text-sm font-medium text-white bg-gray-800  rounded-r hover:bg-gray-900 ">
+        className='disabled:bg-gray-400 border disabled:text-gray-50 border-gray-800 px-4 py-2 text-sm font-medium text-white bg-gray-800  rounded-r hover:bg-gray-900 '>
           Next
         </button>
       </div>
+      
       </div>
         }
-      <div className='mx-auto mt-6 p-2 container  justify-center flex flex-wrap gap-5'>
+      <div className='mx-auto mt-6 p-2 min-h-[570px] container justify-center flex flex-wrap gap-5 '>
       {pokemons.map(pokemon => <PokeCard seeAll={seeAll} name={pokemon.name} key={pokemon.url} url={pokemon.url}/>)}
       
       </div>
+      <Footer></Footer>
     </div>
   );
 }

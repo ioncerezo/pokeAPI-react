@@ -1,8 +1,8 @@
 function TypeBadge ({type}){
     let style = ''
     const styles= [
-        ['normal', "bg-neutral-300 text-neutral-800 text-xs font-medium px-2 py-0.5 rounded  border border-neutral-500"],
-        ['steel', "bg-neutral-200 text-neutral-600 text-xs font-medium px-2 py-0.5 rounded  border border-neutral-500"],
+        ['normal', 'bg-neutral-300 text-neutral-800 text-xs font-medium px-2 py-0.5 rounded  border border-neutral-500'],
+        ['steel', 'bg-neutral-200 text-neutral-600 text-xs font-medium px-2 py-0.5 rounded  border border-neutral-500'],
         ['water', 'bg-blue-400 text-blue-50 text-xs font-medium px-2 py-0.5 rounded  border border-blue-700'],
         ['rock', 'bg-stone-300 text-stone-800 text-xs font-medium px-2 py-0.5 rounded border border-stone-500'],
         ['fire', 'bg-orange-700 text-red-50 text-xs font-medium px-2 py-0.5 rounded border border-red-900'],

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import TypeBadge from "./TypeBadge";
+import React, { useState, useEffect } from 'react';
+import TypeBadge from './TypeBadge';
 
 function PokeCard({ url, name, seeAll }) {
   const [pokemonName, setPokemonName] = useState();
@@ -10,10 +10,10 @@ function PokeCard({ url, name, seeAll }) {
   const [pokemonTypes, setPokemonTypes] = useState([]);
   const [pokemonDescription, setPokemonDescription] = useState();
   const [cardOpen, setCardOpen] = useState(false);
-  const url2 = "https://pokeapi.co/api/v2/pokemon-species/" + name;
+  const url2 = 'https://pokeapi.co/api/v2/pokemon-species/' + name;
 
   function sentenceCase(input, lowercaseBefore) {
-    input = input === undefined || input === null ? "" : input;
+    input = input === undefined || input === null ? '' : input;
     if (lowercaseBefore) {
       input = input.toLowerCase();
     }
@@ -30,9 +30,9 @@ function PokeCard({ url, name, seeAll }) {
       .then((e) => {
         const data = e.flavor_text_entries;
         let result = data
-        .filter((entry) => entry.language.name === "en")[0]
-        .flavor_text.replace("", " ");
-        result = sentenceCase(result, " ");
+        .filter((entry) => entry.language.name === 'en')[0]
+        .flavor_text.replace('', ' ');
+        result = sentenceCase(result, ' ');
         setPokemonDescription(result)
         
         
@@ -57,7 +57,7 @@ function PokeCard({ url, name, seeAll }) {
         }
         setPokemonTypes(typeList);
       });
-  }, [url]);
+  }, [pokemonIMG, url]);
   if (url === 'none'){
     return (
     <div>
@@ -74,11 +74,11 @@ function PokeCard({ url, name, seeAll }) {
       onClick={() => {
         setCardOpen(!cardOpen)
         setTimeout(()=>setCardOpen(false),4000)}}
-      className="active:ring-2 cursor-pointer transition duration-300 ease-in-out  bg-white shadow-md border min-h-64 border-gray-200 rounded-lg w-40"
+      className='active:ring-2 cursor-pointer transition duration-300 ease-in-out  bg-white shadow-md border min-h-64 border-gray-200 rounded-lg w-40'
     >
-      <div className="w-full h-32 bg-gray-200 flex items-center justify-center hover:opacity-80 transition duration-500 ease-in-out">
+      <div className='w-full h-32 bg-gray-200 flex items-center justify-center hover:opacity-80 transition duration-500 ease-in-out'>
         <img
-          className=" select-none overflow-hidden whitespace-nowrap indent-[100%]"
+          className=' select-none overflow-hidden whitespace-nowrap indent-[100%]'
           src={cardOpen ? pokemonBackIMG : pokemonIMG}
           alt={`sprite of ${pokemonName}`}
           
@@ -86,19 +86,19 @@ function PokeCard({ url, name, seeAll }) {
       </div>
       {
         cardOpen ? 
-        <div className="min-h-[128px] flex p-2 overflow justify-center items-center">
-        <p className="text-sm min-h-32 italic text-gray-900 " >{pokemonDescription}</p>
+        <div className='min-h-[128px] flex p-2 overflow justify-center items-center'>
+        <p className='text-sm min-h-32 italic text-gray-900 ' >{pokemonDescription}</p>
         </div>
         :
-        <div className="p-5">
-        <div className="flex justify-between mb-2">
-        <h6 className="text-gray-700 font-bold text-xs">N.º{pokemonID}</h6>
-        <h6 className="text-gray-700 italic text-xs">{pokemonWeight/10}kg</h6>
+        <div className='p-5'>
+        <div className='flex justify-between mb-2'>
+        <h6 className='text-gray-700 font-bold text-xs'>N.º{pokemonID}</h6>
+        <h6 className='text-gray-700 italic text-xs'>{pokemonWeight/10}kg</h6>
         </div>
-        <h5 className="text-gray-900 font-bold text-lg text-center tracking-tight mb-2">
+        <h5 className='text-gray-900 font-bold text-lg text-center tracking-tight mb-2'>
           {pokemonName}
         </h5>
-        <div className="flex gap-1 justify-center select-none">
+        <div className='flex gap-1 justify-center select-none'>
           {pokemonTypes.map((type) => (
             <TypeBadge key={`${pokemonName}-${type}`} type={type} />
           ))}
